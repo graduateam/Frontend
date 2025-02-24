@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFE0CC">
+
+    <!-- 상단 헤더 배경 -->
+    <View
+        android:id="@+id/header_background"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#F4A460"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 마이페이지 타이틀 -->
+
+    <!-- 뒤로가기 아이콘 -->
+
+
+    <!-- 인사말 -->
+
+    <!-- 로그아웃 버튼 -->
+
+    <TextView
+        android:id="@+id/txt_my_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:text="마이페이지"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/header_background"
+        app:layout_constraintEnd_toEndOf="@+id/header_background"
+        app:layout_constraintHorizontal_bias="0.947"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/header_background"
+        app:layout_constraintVertical_bias="0.86" />
+
+    <TextView
+        android:id="@+id/txt_greeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:padding="16dp"
+        android:text="반가워요 ---님,\n오늘도 안전운전~"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.938"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_background" />
+
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="로그아웃"
+        android:backgroundTint="#F4A460"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/txt_greeting"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <!-- 비밀번호 변경 버튼 -->
+    <Button
+        android:id="@+id/btn_change_password"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="비밀번호 변경"
+        android:backgroundTint="#D2691E"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/btn_logout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <!-- 회원탈퇴 버튼 -->
+    <Button
+        android:id="@+id/btn_delete_account"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="회원탈퇴"
+        android:backgroundTint="#8B4513"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/btn_change_password"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <!-- 하단 원형 이미지 -->
+    <ImageView
+        android:id="@+id/img_bottom_icon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/image_road_reflector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

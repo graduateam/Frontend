@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFE0CC"> <!-- 배경 색상 적용 -->
+
+    <!-- 상단 헤더 배경 -->
+    <View
+        android:id="@+id/header_background"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:background="#F4A460"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 환경설정 제목 -->
+
+    <!-- 체크박스 목록 -->
+
+    <TextView
+        android:id="@+id/txt_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:text="환경설정"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/header_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/header_background"
+        app:layout_constraintVertical_bias="0.84" />
+
+    <LinearLayout
+        android:id="@+id/settings_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/header_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <CheckBox
+            android:id="@+id/check_vibration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="진동"
+            android:checked="true"/>
+
+        <CheckBox
+            android:id="@+id/check_voice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="음성 설명"
+            android:checked="true"/>
+
+        <CheckBox
+            android:id="@+id/check_visual_effects"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="강조된 시각효과"
+            android:checked="true"/>
+
+        <CheckBox
+            android:id="@+id/check_start_with_apps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="다른 어플과 같이 시작"
+            android:checked="true"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

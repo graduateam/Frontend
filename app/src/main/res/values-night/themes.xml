@@ -1,0 +1,8 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.SmartRoadReflector" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- 기본 버튼 색상을 투명하게 설정 -->
+        <item name="colorButtonNormal">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.SmartRoadReflector" parent="Base.Theme.SmartRoadReflector" />
+</resources>
