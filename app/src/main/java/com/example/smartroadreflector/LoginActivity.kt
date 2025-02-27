@@ -2,26 +2,43 @@ package com.example.smartroadreflector
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.smartroadreflector.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityLoginBinding
+    private lateinit var dbHelper: UserDatabaseHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityLoginBinding.inflate(layoutInflater)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 🔙 뒤로 가기 버튼 클릭 시 StartActivity로 이동
+        dbHelper = UserDatabaseHelper(this)
+
         binding.loginButtonBack.setOnClickListener {
-            val intent = Intent(this, StartActivity::class.java)
-            startActivity(intent)
-            finish() // 현재 액티비티 종료
+            startActivity(Intent(this, StartActivity::class.java))
+            finish()
         }
 
-        // 로그인 버튼 → MainActivity로 이동
         binding.loginSubmitButton.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+            val username = binding.editTextUsername.text.toString().trim()
+            val password = binding.editTextPassword.text.toString().trim()
+
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "아이디와 비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (dbHelper.loginUser(username, password)) {
+                Toast.makeText(this, "로그인 성공!", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(this, "로그인 실패: 아이디 또는 비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
