@@ -1,5 +1,6 @@
 package com.example.smartroadreflector
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
@@ -36,19 +37,37 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (password != confirmPassword) {
-                Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 Toast.makeText(this, "유효한 이메일을 입력하세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            if (password != confirmPassword) {
+                Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // 🔹 비밀번호 유효성 검사 추가
+            if (!isValidPassword(password)) {
+                Toast.makeText(
+                    this,
+                    "비밀번호는 8자 이상이며, 영문 + 숫자 + 특수문자를 포함해야 합니다.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
             val success = dbHelper.registerUser(username, nickname, password, email)
             if (success) {
-                Toast.makeText(this, "회원가입 성공! 로그인 해주세요.", Toast.LENGTH_SHORT).show()
+                // 🔹 회원가입 성공 후 자동 로그인 정보 저장
+                val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+                with(sharedPrefs.edit()) {
+                    putString("LAST_USERNAME", username)
+                    putString("LOGGED_IN_NICKNAME", nickname)
+                    apply()
+                }
+
+                Toast.makeText(this, "회원가입 성공! 자동 로그인됩니다.", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, WelcomeActivity::class.java))
                 finish()
             } else {
@@ -62,7 +81,12 @@ class RegisterActivity : AppCompatActivity() {
             view.performClick() // performClick() 호출하여 경고 해결
             false
         }
+    }
 
+    // 🔹 비밀번호 유효성 검사 함수
+    private fun isValidPassword(password: String): Boolean {
+        val passwordPattern = Regex("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}$")
+        return passwordPattern.matches(password)
     }
 
     // 키보드를 숨기는 함수
