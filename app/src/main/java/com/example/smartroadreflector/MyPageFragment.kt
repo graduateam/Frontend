@@ -1,6 +1,8 @@
 package com.example.smartroadreflector
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,16 +28,9 @@ class MyPageFragment : Fragment() {
         val btnChangePassword = view.findViewById<Button>(R.id.btn_change_password)
         val btnDeleteAccount = view.findViewById<Button>(R.id.btn_delete_account)
 
+        // 로그아웃 버튼 클릭 이벤트
         btnLogout.setOnClickListener {
-            // 로그아웃 로직 추가
-        }
-
-        btnChangePassword.setOnClickListener {
-            // 비밀번호 변경 로직 추가
-        }
-
-        btnDeleteAccount.setOnClickListener {
-            // 회원탈퇴 로직 추가
+            showLogoutDialog()
         }
 
         return view
@@ -47,4 +42,31 @@ class MyPageFragment : Fragment() {
         return sharedPrefs.getString("LOGGED_IN_NICKNAME", "사용자")
     }
 
+    // 🔹 로그아웃 확인 팝업 표시
+    private fun showLogoutDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("로그아웃")
+            .setMessage("로그아웃 하시겠습니까?")
+            .setPositiveButton("예") { _, _ ->
+                logoutUser()
+            }
+            .setNegativeButton("아니오", null)
+            .show()
+    }
+
+    // 🔹 로그아웃 처리 및 데이터 초기화
+    private fun logoutUser() {
+        val sharedPrefs = requireContext().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        with(sharedPrefs.edit()) {
+            remove("LAST_USERNAME")  // 자동 로그인 정보 삭제
+            remove("LAST_PASSWORD")
+            remove("LOGGED_IN_NICKNAME")
+            apply()
+        }
+
+        // 로그인 화면으로 이동
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
 }
