@@ -33,6 +33,11 @@ class MyPageFragment : Fragment() {
             showLogoutDialog()
         }
 
+        btnChangePassword.setOnClickListener {
+            val intent = Intent(requireContext(), ChangePasswordActivity::class.java)
+            startActivity(intent)
+        }
+
         return view
     }
 

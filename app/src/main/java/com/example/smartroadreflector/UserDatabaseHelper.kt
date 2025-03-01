@@ -67,4 +67,12 @@ class UserDatabaseHelper(context: Context) :
         return nickname
     }
 
+    fun updatePassword(username: String, newPassword: String): Boolean {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put("password", newPassword) // 새 비밀번호 저장
+        }
+        val result = db.update("users", values, "username = ?", arrayOf(username))
+        return result > 0 // 업데이트 성공 여부 반환
+    }
 }
