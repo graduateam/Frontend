@@ -2,6 +2,7 @@ package com.example.smartroadreflector
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.smartroadreflector.databinding.ActivityRegisterBinding
@@ -54,5 +55,19 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this, "회원가입 실패: 중복된 아이디 또는 이메일이 존재합니다.", Toast.LENGTH_SHORT).show()
             }
         }
+
+        // 화면을 터치하면 키보드를 숨기도록 설정
+        binding.root.setOnTouchListener { view, _ ->
+            hideKeyboard()
+            view.performClick() // performClick() 호출하여 경고 해결
+            false
+        }
+
+    }
+
+    // 키보드를 숨기는 함수
+    private fun hideKeyboard() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
     }
 }

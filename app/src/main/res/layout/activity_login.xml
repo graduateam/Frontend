@@ -52,6 +52,7 @@
         android:textSize="16sp"
         android:fontFamily="@font/pretendard_regular"
         android:layout_marginTop="20dp"
+        android:inputType="textNoSuggestions"
         app:layout_constraintTop_toBottomOf="@id/textView2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
