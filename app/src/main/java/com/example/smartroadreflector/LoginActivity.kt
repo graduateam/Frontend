@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -71,6 +72,12 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "로그인 실패: 아이디 또는 비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show()
             }
         }
+        // 화면을 터치하면 키보드를 숨기도록 설정
+        binding.root.setOnTouchListener { view, _ ->
+            hideKeyboard()
+            view.performClick() // performClick() 호출하여 경고 해결
+            false
+        }
     }
 
     // 자동 로그인 상태 변경
@@ -118,4 +125,10 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+    // 키보드를 숨기는 함수
+    private fun hideKeyboard() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+    }
+
 }
