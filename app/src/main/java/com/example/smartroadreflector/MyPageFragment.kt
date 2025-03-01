@@ -38,6 +38,12 @@ class MyPageFragment : Fragment() {
             startActivity(intent)
         }
 
+        btnDeleteAccount.setOnClickListener {
+            val intent = Intent(requireContext(), DeleteAccountActivity::class.java)
+            startActivity(intent)
+        }
+
+
         return view
     }
 

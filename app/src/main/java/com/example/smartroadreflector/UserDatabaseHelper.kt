@@ -75,4 +75,11 @@ class UserDatabaseHelper(context: Context) :
         val result = db.update("users", values, "username = ?", arrayOf(username))
         return result > 0 // 업데이트 성공 여부 반환
     }
+
+    fun deleteUserAccount(username: String): Boolean {
+        val db = writableDatabase
+        val result = db.delete("users", "username = ?", arrayOf(username))
+        return result > 0 // 삭제 성공 여부 반환
+    }
+
 }
