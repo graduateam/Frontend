@@ -53,4 +53,18 @@ class UserDatabaseHelper(context: Context) :
         private const val COLUMN_PASSWORD = "password"
         private const val COLUMN_EMAIL = "email"
     }
+
+    fun getNickname(username: String): String? {
+        val db = readableDatabase
+        val query = "SELECT $COLUMN_NICKNAME FROM $TABLE_USERS WHERE $COLUMN_USERNAME = ?"
+        val cursor = db.rawQuery(query, arrayOf(username))
+        var nickname: String? = null
+
+        if (cursor.moveToFirst()) {
+            nickname = cursor.getString(0)
+        }
+        cursor.close()
+        return nickname
+    }
+
 }

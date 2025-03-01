@@ -54,10 +54,14 @@ class LoginActivity : AppCompatActivity() {
             }
 
             if (dbHelper.loginUser(username, password)) {
-                // 자동 로그인 설정 시 아이디/비밀번호 저장
+                // 🔹 로그인 성공 시 닉네임 가져오기
+                val nickname = dbHelper.getNickname(username) ?: "사용자"
+
+                // 🔹 SharedPreferences에 저장
                 sharedPreferences.edit()
                     .putString("LAST_USERNAME", username)
                     .putString("LAST_PASSWORD", password)
+                    .putString("LOGGED_IN_NICKNAME", nickname) // 닉네임 저장
                     .apply()
 
                 Toast.makeText(this, "로그인 성공!", Toast.LENGTH_SHORT).show()
@@ -103,6 +107,12 @@ class LoginActivity : AppCompatActivity() {
 
         if (lastUsername.isNotEmpty() && lastPassword.isNotEmpty()) {
             if (dbHelper.loginUser(lastUsername, lastPassword)) {
+                // 🔹 자동 로그인 시에도 닉네임을 가져와 저장
+                val nickname = dbHelper.getNickname(lastUsername) ?: "사용자"
+                sharedPreferences.edit()
+                    .putString("LOGGED_IN_NICKNAME", nickname)
+                    .apply()
+
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
