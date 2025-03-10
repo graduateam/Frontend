@@ -17,8 +17,7 @@
         android:gravity="center"
         android:text="회원 탈퇴"
         android:textColor="@android:color/black"
-        android:textSize="24sp"
-        android:fontFamily="@font/pretendard_bold"
+        style="@style/Title1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -53,10 +52,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="비밀번호 입력"
-            android:fontFamily="@font/pretendard_semibold"
-            android:textSize="16sp"
             android:textColor="#000000"
-            android:paddingBottom="4dp"/>
+            android:paddingBottom="4dp"
+            style="@style/Body1_SemiBold"/>
 
         <EditText
             android:id="@+id/edit_delete_password"
@@ -67,7 +65,7 @@
             android:inputType="textPassword"
             android:padding="10dp"
             android:textColorHint="#B0B0B0"
-            android:textSize="16sp"/>
+            style="@style/Body1_Regular"/>
     </LinearLayout>
 
     <!-- 회원 탈퇴 버튼 -->
@@ -78,9 +76,8 @@
         android:background="@drawable/button_o"
         android:text="회원 탈퇴"
         android:textColor="#FFFFFF"
-        android:fontFamily="@font/pretendard_bold"
-        android:textSize="16sp"
         android:layout_marginTop="20dp"
+        style="@style/Body1_Bold"
         app:layout_constraintTop_toBottomOf="@id/passwordInputLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

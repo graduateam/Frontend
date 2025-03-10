@@ -1,3 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Title Styles -->
+    <style name="Title1" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">24dp</item>
+        <item name="android:fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="Title2" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">20dp</item>
+        <item name="android:fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="Subtitle1" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">20dp</item>
+        <item name="android:fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="Subtitle2" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">18dp</item>
+        <item name="android:fontFamily">@font/pretendard_semibold</item>
+    </style>
+
+    <!-- Body Styles -->
+    <style name="Body1_Bold" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">16dp</item>
+        <item name="android:fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="Body1_SemiBold" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">16dp</item>
+        <item name="android:fontFamily">@font/pretendard_semibold</item>
+    </style>
+
+    <style name="Body1_Regular" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">16dp</item>
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+    </style>
+
+    <style name="Body2_Bold" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">14dp</item>
+        <item name="android:fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="Body2_SemiBold" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">14dp</item>
+        <item name="android:fontFamily">@font/pretendard_semibold</item>
+    </style>
+
+    <style name="Body2_Regular" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">14dp</item>
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+    </style>
+
+    <style name="Body3_Bold" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">12dp</item>
+        <item name="android:fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="Body3_SemiBold" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">12dp</item>
+        <item name="android:fontFamily">@font/pretendard_semibold</item>
+    </style>
+
+    <style name="Body3_Regular" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">12dp</item>
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+    </style>
+
+    <style name="Caption" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">12dp</item>
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+    </style>
 </resources>

@@ -95,9 +95,8 @@
                     android:gravity="center"
                     android:paddingTop="4dp"
                     android:text="마이페이지"
-                    android:fontFamily="@font/pretendard_bold"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    style="@style/Body2_Bold"/>
             </LinearLayout>
 
             <!-- 팝업 버튼 -->
@@ -124,9 +123,8 @@
                     android:gravity="center"
                     android:paddingTop="4dp"
                     android:text="팝업"
-                    android:fontFamily="@font/pretendard_bold"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    style="@style/Body2_Bold"/>
             </LinearLayout>
 
             <!-- 환경설정 버튼 -->
@@ -153,9 +151,8 @@
                     android:gravity="center"
                     android:paddingTop="4dp"
                     android:text="환경설정"
-                    android:fontFamily="@font/pretendard_bold"
                     android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                    style="@style/Body2_Bold"/>
             </LinearLayout>
 
         </LinearLayout>

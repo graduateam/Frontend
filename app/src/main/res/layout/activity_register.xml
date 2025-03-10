@@ -20,8 +20,7 @@
         android:lineSpacingExtra="3sp"
         android:text="회원가입"
         android:textColor="@android:color/black"
-        android:textSize="24sp"
-        android:fontFamily="@font/pretendard_bold"
+        style="@style/Title1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,9 +42,8 @@
             android:layout_height="wrap_content"
             android:paddingBottom="4dp"
             android:text="아이디 입력"
-            android:fontFamily="@font/pretendard_semibold"
             android:textColor="#000000"
-            android:textSize="16sp" />
+            style="@style/Body1_SemiBold"/>
 
         <EditText
             android:id="@+id/editTextUsername"
@@ -53,11 +51,10 @@
             android:layout_height="50dp"
             android:background="@drawable/edittext_w"
             android:hint="아이디"
-            android:fontFamily="@font/pretendard_regular"
             android:padding="10dp"
             android:textColorHint="#B0B0B0"
-            android:textSize="16sp"
-            android:inputType="textNoSuggestions"/>
+            android:inputType="textNoSuggestions"
+            style="@style/Body1_Regular"/>
     </LinearLayout>
 
     <!-- 닉네임 입력 필드 -->
@@ -76,10 +73,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="닉네임 입력"
-            android:fontFamily="@font/pretendard_semibold"
-            android:textSize="16sp"
             android:textColor="#000000"
-            android:paddingBottom="4dp"/>
+            android:paddingBottom="4dp"
+            style="@style/Body1_SemiBold"/>
 
         <EditText
             android:id="@+id/editTextNickname"
@@ -87,11 +83,10 @@
             android:layout_height="50dp"
             android:background="@drawable/edittext_w"
             android:hint="닉네임"
-            android:fontFamily="@font/pretendard_regular"
             android:textColorHint="#B0B0B0"
             android:padding="10dp"
-            android:textSize="16sp"
-            android:inputType="textNoSuggestions"/>
+            android:inputType="textNoSuggestions"
+            style="@style/Body1_Regular"/>
     </LinearLayout>
 
     <!-- 비밀번호 입력 필드 -->
@@ -110,10 +105,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="비밀번호 입력"
-            android:fontFamily="@font/pretendard_semibold"
-            android:textSize="16sp"
             android:textColor="#000000"
-            android:paddingBottom="4dp"/>
+            android:paddingBottom="4dp"
+            style="@style/Body1_SemiBold"/>
 
         <EditText
             android:id="@+id/editTextPassword"
@@ -121,11 +115,10 @@
             android:layout_height="50dp"
             android:background="@drawable/edittext_w"
             android:hint="비밀번호"
-            android:fontFamily="@font/pretendard_regular"
             android:inputType="textPassword"
             android:textColorHint="#B0B0B0"
             android:padding="10dp"
-            android:textSize="16sp"/>
+            style="@style/Body1_Regular"/>
 
         <EditText
             android:id="@+id/editTextPasswordConfirm"
@@ -133,12 +126,11 @@
             android:layout_height="50dp"
             android:background="@drawable/edittext_w"
             android:hint="비밀번호 확인"
-            android:fontFamily="@font/pretendard_regular"
             android:inputType="textPassword"
             android:textColorHint="#B0B0B0"
             android:padding="10dp"
-            android:textSize="16sp"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp"
+            style="@style/Body1_Regular"/>
     </LinearLayout>
 
     <!-- 이메일 입력 필드 -->
@@ -157,10 +149,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="이메일 입력"
-            android:fontFamily="@font/pretendard_semibold"
-            android:textSize="16sp"
             android:textColor="#000000"
-            android:paddingBottom="4dp"/>
+            android:paddingBottom="4dp"
+            style="@style/Body1_SemiBold"/>
 
         <EditText
             android:id="@+id/editTextEmail"
@@ -168,11 +159,10 @@
             android:layout_height="50dp"
             android:background="@drawable/edittext_w"
             android:hint="이메일"
-            android:fontFamily="@font/pretendard_regular"
             android:inputType="textEmailAddress"
             android:textColorHint="#B0B0B0"
             android:padding="10dp"
-            android:textSize="16sp"/>
+            style="@style/Body1_Regular"/>
     </LinearLayout>
 
     <!-- 회원가입 버튼 -->
@@ -199,11 +189,10 @@
         android:background="@drawable/button_o"
         android:backgroundTint="@null"
         android:text="회원가입"
-        android:fontFamily="@font/pretendard_bold"
         android:textColor="#FFFFFF"
-        android:textSize="16sp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="50dp"
+        style="@style/Body1_Bold"
         app:layout_constraintTop_toBottomOf="@id/emailInputLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
