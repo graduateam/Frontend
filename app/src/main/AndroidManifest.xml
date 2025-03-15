@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -19,9 +23,15 @@
             android:name=".ChangePasswordActivity"
             android:exported="false" />
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDYePhr8bsnUCNXB99iFu6b6YA95VyBr5U" />
+        <uses-library android:name="org.apache.http.legacy"
+            android:required="false"/>
+<!--        <meta-data-->
+<!--            android:name="com.google.android.geo.API_KEY"-->
+<!--            android:value="AIzaSyDYePhr8bsnUCNXB99iFu6b6YA95VyBr5U" />-->
+        <meta-data android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDYePhr8bsnUCNXB99iFu6b6YA95VyBr5U"/>
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
 
         <activity
             android:name=".TestActivity"
