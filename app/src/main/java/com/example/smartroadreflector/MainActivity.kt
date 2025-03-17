@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.view.KeyEvent
 import androidx.appcompat.app.AppCompatActivity
@@ -37,6 +38,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     // 🔹 admin 가상의 좌표값 (초기값: 서울)
     private var simulatedLocation = LatLng(37.5665, 126.9780)
+    private var pendingLatOffset = 0.0
+    private var pendingLngOffset = 0.0
+
+    // 🔹 0.5초마다 위치 갱신을 위한 핸들러
+    private val locationUpdateHandler = Handler(Looper.getMainLooper())
+    private val locationUpdateRunnable = object : Runnable {
+        override fun run() {
+            if (currentUserId == "admin") {
+                applyPendingAdminMovement()
+            } else {
+                requestLocationUpdate()
+            }
+            locationUpdateHandler.postDelayed(this, 500) // 0.5초마다 실행
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +90,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                if (currentUserId != "admin") { // 🔹 일반 사용자만 GPS 사용
+                if (currentUserId != "admin") {
                     locationResult.lastLocation?.let { location ->
                         updateMapLocation(location)
                     }
@@ -84,11 +100,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         currentUserId = intent.getStringExtra("USER_ID")
 
+        // 🔹 0.5초마다 위치 업데이트 시작
+        locationUpdateHandler.post(locationUpdateRunnable)
     }
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-
         if (currentUserId == "admin") {
             updateAdminMapLocation()
         } else {
@@ -105,7 +122,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 LOCATION_PERMISSION_REQUEST_CODE)
             return
         }
-
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
 
@@ -127,11 +143,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         )
 
         receiveCount++
-
-        android.util.Log.d("MainActivity", "🗺️ 현재 위치 업데이트: ${myLatLng.latitude}, ${myLatLng.longitude}")
     }
 
-    // 🔹 Admin 모드 시, 가상 위치를 업데이트하는 함수
+    // 🔹 0.5초마다 Admin의 가상 위치 갱신
+    private fun applyPendingAdminMovement() {
+        if (pendingLatOffset != 0.0 || pendingLngOffset != 0.0) {
+            simulatedLocation = LatLng(
+                simulatedLocation.latitude + pendingLatOffset,
+                simulatedLocation.longitude + pendingLngOffset
+            )
+            pendingLatOffset = 0.0
+            pendingLngOffset = 0.0
+        }
+        updateAdminMapLocation()
+    }
+
     private fun updateAdminMapLocation() {
         googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(simulatedLocation, 15f))
 
@@ -148,26 +174,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (currentUserId == "admin") {
             when (keyCode) {
-                KeyEvent.KEYCODE_DPAD_UP -> moveSimulatedLocation(0.00005, 0.0)  // 위로 5m
-                KeyEvent.KEYCODE_DPAD_DOWN -> moveSimulatedLocation(-0.00005, 0.0) // 아래로 5m
-                KeyEvent.KEYCODE_DPAD_LEFT -> moveSimulatedLocation(0.0, -0.00005) // 왼쪽으로 5m
-                KeyEvent.KEYCODE_DPAD_RIGHT -> moveSimulatedLocation(0.0, 0.00005) // 오른쪽으로 5m
+                KeyEvent.KEYCODE_DPAD_UP -> pendingLatOffset += 0.00005  // 위로 5m
+                KeyEvent.KEYCODE_DPAD_DOWN -> pendingLatOffset -= 0.00005 // 아래로 5m
+                KeyEvent.KEYCODE_DPAD_LEFT -> pendingLngOffset -= 0.00005 // 왼쪽으로 5m
+                KeyEvent.KEYCODE_DPAD_RIGHT -> pendingLngOffset += 0.00005 // 오른쪽으로 5m
             }
             return true
         }
         return super.onKeyDown(keyCode, event)
     }
 
-    private fun moveSimulatedLocation(latOffset: Double, lngOffset: Double) {
-        simulatedLocation = LatLng(simulatedLocation.latitude + latOffset, simulatedLocation.longitude + lngOffset)
-        updateAdminMapLocation()
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startLocationUpdates()
+    private fun requestLocationUpdate() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    updateMapLocation(location)
+                }
             }
         }
     }
@@ -177,6 +199,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         if (currentUserId != "admin") {
             fusedLocationClient.removeLocationUpdates(locationCallback)
         }
+        locationUpdateHandler.removeCallbacks(locationUpdateRunnable)
     }
 
     companion object {
