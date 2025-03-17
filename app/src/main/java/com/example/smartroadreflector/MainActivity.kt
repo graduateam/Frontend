@@ -5,10 +5,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
-import android.view.Gravity
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.view.KeyEvent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -36,9 +33,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var userLocationCircle: Circle? = null
     private var isFirstLocationUpdate = true
     private var receiveCount = 0
-
     private var currentUserId: String? = null // 로그인한 사용자 ID
-    private var debugTextViews: List<TextView>? = null
+
+    // 🔹 admin 가상의 좌표값 (초기값: 서울)
+    private var simulatedLocation = LatLng(37.5665, 126.9780)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,24 +74,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                locationResult.lastLocation?.let { location ->
-                    updateMapLocation(location)
+                if (currentUserId != "admin") { // 🔹 일반 사용자만 GPS 사용
+                    locationResult.lastLocation?.let { location ->
+                        updateMapLocation(location)
+                    }
                 }
             }
         }
 
-        // 🔹 로그인한 사용자 ID 가져오기
         currentUserId = intent.getStringExtra("USER_ID")
 
-        // 🔹 admin 계정이면 디버그 UI 추가
-        if (currentUserId == "admin") {
-            showDebugInfo()
-        }
     }
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-        startLocationUpdates()
+
+        if (currentUserId == "admin") {
+            updateAdminMapLocation()
+        } else {
+            startLocationUpdates()
+        }
     }
 
     private fun startLocationUpdates() {
@@ -128,71 +128,39 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         receiveCount++
 
-        if (currentUserId == "admin") {
-            updateDebugInfo(location)
-        }
-
         android.util.Log.d("MainActivity", "🗺️ 현재 위치 업데이트: ${myLatLng.latitude}, ${myLatLng.longitude}")
     }
 
-    private fun showDebugInfo() {
-        val rootLayout = findViewById<FrameLayout>(android.R.id.content)
+    // 🔹 Admin 모드 시, 가상 위치를 업데이트하는 함수
+    private fun updateAdminMapLocation() {
+        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(simulatedLocation, 15f))
 
-        val debugLayout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(16, 16, 16, 16)
-            setBackgroundColor(0xAAFFFFFF.toInt()) // 반투명 흰색 배경
-            gravity = Gravity.CENTER
-        }
-
-        val params = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            gravity = Gravity.TOP or Gravity.END
-            setMargins(20, 100, 20, 0)
-        }
-
-        val debugIdText = TextView(this).apply {
-            textSize = 16f
-            setTextColor(android.graphics.Color.BLACK)
-            text = "ID: $currentUserId"
-        }
-
-        val debugCountText = TextView(this).apply {
-            textSize = 16f
-            setTextColor(android.graphics.Color.BLACK)
-            text = "수신 횟수: 0"
-        }
-
-        val debugLatText = TextView(this).apply {
-            textSize = 16f
-            setTextColor(android.graphics.Color.BLACK)
-            text = "위도: --"
-        }
-
-        val debugLonText = TextView(this).apply {
-            textSize = 16f
-            setTextColor(android.graphics.Color.BLACK)
-            text = "경도: --"
-        }
-
-        debugLayout.addView(debugIdText)
-        debugLayout.addView(debugCountText)
-        debugLayout.addView(debugLatText)
-        debugLayout.addView(debugLonText)
-
-        rootLayout.addView(debugLayout, params)
-
-        debugTextViews = listOf(debugIdText, debugCountText, debugLatText, debugLonText)
+        userLocationCircle?.remove()
+        userLocationCircle = googleMap?.addCircle(
+            CircleOptions()
+                .center(simulatedLocation)
+                .radius(20.0)
+                .strokeColor(0xFFFF0000.toInt())
+                .fillColor(0x33FF0000.toInt())
+        )
     }
 
-    private fun updateDebugInfo(location: Location) {
-        debugTextViews?.let { texts ->
-            texts[1].text = "수신 횟수: $receiveCount"
-            texts[2].text = "위도: ${location.latitude}"
-            texts[3].text = "경도: ${location.longitude}"
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (currentUserId == "admin") {
+            when (keyCode) {
+                KeyEvent.KEYCODE_DPAD_UP -> moveSimulatedLocation(0.00005, 0.0)  // 위로 5m
+                KeyEvent.KEYCODE_DPAD_DOWN -> moveSimulatedLocation(-0.00005, 0.0) // 아래로 5m
+                KeyEvent.KEYCODE_DPAD_LEFT -> moveSimulatedLocation(0.0, -0.00005) // 왼쪽으로 5m
+                KeyEvent.KEYCODE_DPAD_RIGHT -> moveSimulatedLocation(0.0, 0.00005) // 오른쪽으로 5m
+            }
+            return true
         }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    private fun moveSimulatedLocation(latOffset: Double, lngOffset: Double) {
+        simulatedLocation = LatLng(simulatedLocation.latitude + latOffset, simulatedLocation.longitude + lngOffset)
+        updateAdminMapLocation()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -206,7 +174,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onPause() {
         super.onPause()
-        fusedLocationClient.removeLocationUpdates(locationCallback)
+        if (currentUserId != "admin") {
+            fusedLocationClient.removeLocationUpdates(locationCallback)
+        }
     }
 
     companion object {
