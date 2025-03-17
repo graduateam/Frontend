@@ -23,6 +23,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     private var userLocationCircle: Circle? = null
+    private var randomCircles: MutableList<Circle> = mutableListOf()
     private var isFirstLocationUpdate = true
     private var receiveCount = 0
     private var currentUserId: String? = null // 로그인한 사용자 ID
@@ -41,15 +43,23 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var pendingLatOffset = 0.0
     private var pendingLngOffset = 0.0
 
+    // 🔹 지도 초기 축척 설정
+    private var initialZoomLevel: Float = 15f
+
     // 🔹 0.5초마다 위치 갱신을 위한 핸들러
     private val locationUpdateHandler = Handler(Looper.getMainLooper())
     private val locationUpdateRunnable = object : Runnable {
         override fun run() {
-            if (currentUserId == "admin") {
+            val updatedLocation = if (currentUserId == "admin") {
                 applyPendingAdminMovement()
+                simulatedLocation
             } else {
                 requestLocationUpdate()
+                userLocationCircle?.center // 현재 GPS 위치
             }
+
+            updatedLocation?.let { updateRandomCircles(it) }
+
             locationUpdateHandler.postDelayed(this, 500) // 0.5초마다 실행
         }
     }
@@ -90,13 +100,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                if (currentUserId != "admin") {
+                if (currentUserId != "admin") { // 🔹 Admin이면 GPS 데이터 무시
                     locationResult.lastLocation?.let { location ->
                         updateMapLocation(location)
                     }
                 }
             }
         }
+
 
         currentUserId = intent.getStringExtra("USER_ID")
 
@@ -106,11 +117,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-        if (currentUserId == "admin") {
-            updateAdminMapLocation()
-        } else {
-            startLocationUpdates()
-        }
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(simulatedLocation, initialZoomLevel)) // 초깃값 적용
+        startLocationUpdates()
     }
 
     private fun startLocationUpdates() {
@@ -127,11 +135,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun updateMapLocation(location: Location) {
         val myLatLng = LatLng(location.latitude, location.longitude)
-
-        if (isFirstLocationUpdate) {
-            googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 15f))
-            isFirstLocationUpdate = false
-        }
+        googleMap?.animateCamera(CameraUpdateFactory.newLatLng(myLatLng)) // 초점만 이동, 축척 유지
 
         userLocationCircle?.remove()
         userLocationCircle = googleMap?.addCircle(
@@ -145,8 +149,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         receiveCount++
     }
 
-    // 🔹 0.5초마다 Admin의 가상 위치 갱신
-    private fun applyPendingAdminMovement() {
+    private fun applyPendingAdminMovement(): LatLng {
         if (pendingLatOffset != 0.0 || pendingLngOffset != 0.0) {
             simulatedLocation = LatLng(
                 simulatedLocation.latitude + pendingLatOffset,
@@ -156,10 +159,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             pendingLngOffset = 0.0
         }
         updateAdminMapLocation()
+        return simulatedLocation
     }
 
     private fun updateAdminMapLocation() {
-        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(simulatedLocation, 15f))
+        googleMap?.animateCamera(CameraUpdateFactory.newLatLng(simulatedLocation)) // 초점만 이동, 축척 유지
 
         userLocationCircle?.remove()
         userLocationCircle = googleMap?.addCircle(
@@ -174,10 +178,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (currentUserId == "admin") {
             when (keyCode) {
-                KeyEvent.KEYCODE_DPAD_UP -> pendingLatOffset += 0.00005  // 위로 5m
-                KeyEvent.KEYCODE_DPAD_DOWN -> pendingLatOffset -= 0.00005 // 아래로 5m
-                KeyEvent.KEYCODE_DPAD_LEFT -> pendingLngOffset -= 0.00005 // 왼쪽으로 5m
-                KeyEvent.KEYCODE_DPAD_RIGHT -> pendingLngOffset += 0.00005 // 오른쪽으로 5m
+                KeyEvent.KEYCODE_DPAD_UP -> pendingLatOffset += 0.00005
+                KeyEvent.KEYCODE_DPAD_DOWN -> pendingLatOffset -= 0.00005
+                KeyEvent.KEYCODE_DPAD_LEFT -> pendingLngOffset -= 0.00005
+                KeyEvent.KEYCODE_DPAD_RIGHT -> pendingLngOffset += 0.00005
             }
             return true
         }
@@ -194,11 +198,31 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun updateRandomCircles(center: LatLng) {
+        // 🔹 기존 파란색 원 삭제
+        randomCircles.forEach { it.remove() }
+        randomCircles.clear()
+
+        // 🔹 새 파란색 원 3개 생성
+        repeat(3) {
+            val randomOffsetLat = (Random.nextDouble(-0.0009, 0.0009)) // 약 100m 이내
+            val randomOffsetLng = (Random.nextDouble(-0.0009, 0.0009))
+            val randomLatLng = LatLng(center.latitude + randomOffsetLat, center.longitude + randomOffsetLng)
+
+            val circle = googleMap?.addCircle(
+                CircleOptions()
+                    .center(randomLatLng)
+                    .radius(10.0)
+                    .strokeColor(0xFF0000FF.toInt())
+                    .fillColor(0x330000FF.toInt())
+            )
+            circle?.let { randomCircles.add(it) }
+        }
+    }
+
     override fun onPause() {
         super.onPause()
-        if (currentUserId != "admin") {
-            fusedLocationClient.removeLocationUpdates(locationCallback)
-        }
+        fusedLocationClient.removeLocationUpdates(locationCallback)
         locationUpdateHandler.removeCallbacks(locationUpdateRunnable)
     }
 
