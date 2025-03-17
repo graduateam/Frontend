@@ -66,7 +66,12 @@ class LoginActivity : AppCompatActivity() {
                     .apply()
 
                 Toast.makeText(this, "로그인 성공!", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, MainActivity::class.java))
+
+                // 🔹 사용자 ID를 MainActivity로 전달
+                val intent = Intent(this, MainActivity::class.java).apply {
+                    putExtra("USER_ID", username) // 로그인한 사용자 ID 전달
+                }
+                startActivity(intent)
                 finish()
             } else {
                 Toast.makeText(this, "로그인 실패: 아이디 또는 비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show()
@@ -75,8 +80,31 @@ class LoginActivity : AppCompatActivity() {
         // 화면을 터치하면 키보드를 숨기도록 설정
         binding.root.setOnTouchListener { view, _ ->
             hideKeyboard()
-            view.performClick() // performClick() 호출하여 경고 해결
+            view.performClick()
             false
+        }
+    }
+
+    // 자동 로그인 실행
+    private fun autoLogin() {
+        val lastUsername = sharedPreferences.getString("LAST_USERNAME", "") ?: ""
+        val lastPassword = sharedPreferences.getString("LAST_PASSWORD", "") ?: ""
+
+        if (lastUsername.isNotEmpty() && lastPassword.isNotEmpty()) {
+            if (dbHelper.loginUser(lastUsername, lastPassword)) {
+                // 🔹 자동 로그인 시에도 닉네임을 가져와 저장
+                val nickname = dbHelper.getNickname(lastUsername) ?: "사용자"
+                sharedPreferences.edit()
+                    .putString("LOGGED_IN_NICKNAME", nickname)
+                    .apply()
+
+                // 🔹 자동 로그인 시 사용자 ID를 MainActivity로 전달
+                val intent = Intent(this, MainActivity::class.java).apply {
+                    putExtra("USER_ID", lastUsername) // 자동 로그인한 사용자 ID 전달
+                }
+                startActivity(intent)
+                finish()
+            }
         }
     }
 
@@ -107,28 +135,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // 자동 로그인 실행
-    private fun autoLogin() {
-        val lastUsername = sharedPreferences.getString("LAST_USERNAME", "") ?: ""
-        val lastPassword = sharedPreferences.getString("LAST_PASSWORD", "") ?: ""
-
-        if (lastUsername.isNotEmpty() && lastPassword.isNotEmpty()) {
-            if (dbHelper.loginUser(lastUsername, lastPassword)) {
-                // 🔹 자동 로그인 시에도 닉네임을 가져와 저장
-                val nickname = dbHelper.getNickname(lastUsername) ?: "사용자"
-                sharedPreferences.edit()
-                    .putString("LOGGED_IN_NICKNAME", nickname)
-                    .apply()
-
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
-            }
-        }
-    }
     // 키보드를 숨기는 함수
     private fun hideKeyboard() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
     }
-
 }
