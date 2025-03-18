@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var currentUserId: String? = null // 로그인한 사용자 ID
 
     // 🔹 admin 가상의 좌표값 (초기값: 서울)
-    private var simulatedLocation = LatLng(37.5665, 126.9780)
+    private var simulatedLocation = LatLng(37.67677149273746, 126.74587662812687)
     private var pendingLatOffset = 0.0
     private var pendingLngOffset = 0.0
 
