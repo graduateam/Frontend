@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     private var userLocationCircle: Circle? = null
+    private var userLocationPolygon: com.google.android.gms.maps.model.Polygon? = null
     private var randomCircles: MutableList<Circle> = mutableListOf()
     private var isFirstLocationUpdate = true // 📌 최초 위치 업데이트 여부 확인
     private var receiveCount = 0 // 📌 위치 업데이트 횟수 카운트
@@ -177,17 +178,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             isFirstLocationUpdate = false
         }
 
-        userLocationCircle?.remove()
-        userLocationCircle = googleMap?.addCircle(
-            CircleOptions()
-                .center(myLatLng)
-                .radius(2.0)
-                .strokeColor(0xFFFF0000.toInt())
-                .fillColor(0x33FF0000.toInt())
-        )
-
+        updateUserPolygon(myLatLng) // 🔹 변경된 부분: Polygon으로 표현
         receiveCount++
     }
+
 
     // 📌 관리자 모드에서 이동 오프셋 적용 함수
     private fun applyPendingAdminMovement(): LatLng {
@@ -205,15 +199,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     // 📌 관리자 위치를 지도에 갱신하는 함수
     private fun updateAdminMapLocation() {
-        userLocationCircle?.remove()
-        userLocationCircle = googleMap?.addCircle(
-            CircleOptions()
-                .center(simulatedLocation)
-                .radius(2.0)
-                .strokeColor(0xFFFF0000.toInt())
-                .fillColor(0x33FF0000.toInt())
-        )
+        updateUserPolygon(simulatedLocation) // 🔹 변경된 부분: Polygon으로 표현
     }
+
 
     // 📌 랜덤한 원을 지도에 추가하는 함수
     private fun updateRandomCircles(center: LatLng) {
@@ -288,6 +276,31 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         circle?.let { plotMarkers.add(it) }
     }
+
+    private fun updateUserPolygon(position: LatLng) {
+        userLocationPolygon?.remove() // 기존 Polygon 제거
+
+        val lat = position.latitude
+        val lng = position.longitude
+
+        // 차량과 동일한 사각형 모양의 좌표 설정
+        val corners = listOf(
+            LatLng(lat + vehicleSize, lng - vehicleSize),
+            LatLng(lat + vehicleSize, lng + vehicleSize),
+            LatLng(lat - vehicleSize, lng + vehicleSize),
+            LatLng(lat - vehicleSize, lng - vehicleSize)
+        )
+
+        // 새 Polygon 추가
+        userLocationPolygon = googleMap?.addPolygon(
+            PolygonOptions()
+                .addAll(corners)
+                .strokeColor(0xFFFF0000.toInt()) // 빨간색 테두리
+                .fillColor(0x33FF0000.toInt()) // 투명 빨간색 내부
+                .strokeWidth(5f)
+        )
+    }
+
 
     override fun onPause() {
         super.onPause()
