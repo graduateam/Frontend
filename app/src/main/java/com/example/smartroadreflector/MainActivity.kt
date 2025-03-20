@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var pendingLatOffset = 0.0
     private var pendingLngOffset = 0.0
 
-    private var initialZoomLevel: Float = 15f // 📌 초기 줌 레벨 설정
+    private var initialZoomLevel: Float = 20f // 📌 초기 줌 레벨 설정
 
     private val locationUpdateHandler = Handler(Looper.getMainLooper())
 
@@ -181,7 +181,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         userLocationCircle = googleMap?.addCircle(
             CircleOptions()
                 .center(myLatLng)
-                .radius(20.0)
+                .radius(2.0)
                 .strokeColor(0xFFFF0000.toInt())
                 .fillColor(0x33FF0000.toInt())
         )
@@ -209,7 +209,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         userLocationCircle = googleMap?.addCircle(
             CircleOptions()
                 .center(simulatedLocation)
-                .radius(20.0)
+                .radius(2.0)
                 .strokeColor(0xFFFF0000.toInt())
                 .fillColor(0x33FF0000.toInt())
         )
@@ -222,14 +222,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         repeat(3) {
             val randomLatLng = LatLng(
-                center.latitude + Random.nextDouble(-0.0009, 0.0009),
-                center.longitude + Random.nextDouble(-0.0009, 0.0009)
+                center.latitude + Random.nextDouble(-0.00009, 0.00009),
+                center.longitude + Random.nextDouble(-0.00009, 0.00009)
             )
 
             val circle = googleMap?.addCircle(
                 CircleOptions()
                     .center(randomLatLng)
-                    .radius(10.0)
+                    .radius(1.0)
                     .strokeColor(0xFF0000FF.toInt())
                     .fillColor(0x330000FF.toInt())
             )
