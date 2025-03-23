@@ -48,4 +48,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.naver.maps:map-sdk:3.21.0")
 }

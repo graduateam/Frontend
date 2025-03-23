@@ -23,15 +23,21 @@
 <!--            app:layout_constraintStart_toStartOf="parent"-->
 <!--            app:layout_constraintEnd_toEndOf="parent"/>-->
 
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/mapView2"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+<!--        <fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--            android:id="@+id/mapView2"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:name="com.google.android.gms.maps.SupportMapFragment"-->
+<!--            app:layout_constraintDimensionRatio="1:1"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"/>-->
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/map_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.naver.maps.map.MapFragment" />
 
         <!-- 하단 배경 뷰 -->
         <View
