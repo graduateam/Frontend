@@ -20,6 +20,8 @@ import com.naver.maps.map.overlay.PolygonOverlay
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var binding: ActivityMainBinding
+    // 줌 레벨 임계값 (예: 15.0 이상이면 위성지도)
+    private val zoomThreshold = 15.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,12 +56,24 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(naverMap: NaverMap) {
-        naverMap.mapType = NaverMap.MapType.Satellite
         // 서울 중심 좌표
         val seoulCenter = LatLng(37.5665, 126.9780)
-        // 카메라 이동 및 적절한 줌 레벨 설정 (줌 레벨은 필요에 따라 조정)
         naverMap.moveCamera(CameraUpdate.scrollTo(seoulCenter))
         naverMap.moveCamera(CameraUpdate.zoomTo(13.0))
+
+        // 카메라 이동이 멈출 때마다 줌 레벨에 따라 지도 타입 변경
+        naverMap.addOnCameraIdleListener {
+            val currentZoom = naverMap.cameraPosition.zoom
+            if (currentZoom >= zoomThreshold) {
+                if (naverMap.mapType != NaverMap.MapType.Satellite) {
+                    naverMap.mapType = NaverMap.MapType.Satellite
+                }
+            } else {
+                if (naverMap.mapType != NaverMap.MapType.Basic) {
+                    naverMap.mapType = NaverMap.MapType.Basic
+                }
+            }
+        }
 
         // 오프셋 값 (좌표 단위, 약 0.005도 정도 → 약 500m 내외)
         val offset = 0.005
@@ -104,8 +118,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 LatLng(seoulCenter.latitude, seoulCenter.longitude + 3.5 * offset),
                 LatLng(seoulCenter.latitude, seoulCenter.longitude + 4 * offset)
             )
-            color = 0xFF888888.toInt()  // 경로 색상 (회색)
-            outlineColor = 0xFF000000.toInt()  // 외곽선 색상 (검정)
+            color = 0xFF888888.toInt()  // 회색
+            outlineColor = 0xFF000000.toInt()  // 검정
             outlineWidth = 6
         }
         pathOverlay.map = naverMap
