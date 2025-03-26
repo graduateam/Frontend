@@ -1,6 +1,12 @@
 package com.example.smartroadreflector
 
+import android.app.PictureInPictureParams
+import android.os.Build
 import android.os.Bundle
+import android.util.Rational
+import android.view.View
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.smartroadreflector.databinding.ActivityMainBinding
@@ -43,6 +49,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.mainUserButton.setOnClickListener {
             drawerLayout.openDrawer(binding.fragmentContainerMyPage)
         }
+        binding.mainMinimizeButton.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val pipParams = PictureInPictureParams.Builder()
+                    .setAspectRatio(Rational(16, 9))
+                    .build()
+                enterPictureInPictureMode(pipParams)
+
+                handlePictureInPictureChange(true) // PiP UI로 전환
+            } else {
+                Toast.makeText(this, "Android 8.0 이상만 지원합니다", Toast.LENGTH_SHORT).show()
+            }
+        }
         binding.mainSettingButton.setOnClickListener {
             drawerLayout.openDrawer(binding.fragmentContainerSettings)
         }
@@ -53,6 +71,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 supportFragmentManager.beginTransaction().add(R.id.map_fragment, it).commit()
             }
         mapFragment.getMapAsync(this)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun handlePictureInPictureChange(isInPictureInPictureMode: Boolean) {
+        if (isInPictureInPictureMode) {
+            binding.bottomButtonLayout.visibility = View.GONE
+            binding.bottomRectangle.visibility = View.GONE
+            binding.wall1.visibility = View.GONE
+            binding.wall2.visibility = View.GONE
+            binding.fragmentContainerMyPage.visibility = View.GONE
+            binding.fragmentContainerSettings.visibility = View.GONE
+        } else {
+            binding.bottomButtonLayout.visibility = View.VISIBLE
+            binding.bottomRectangle.visibility = View.VISIBLE
+            binding.wall1.visibility = View.VISIBLE
+            binding.wall2.visibility = View.VISIBLE
+            binding.fragmentContainerMyPage.visibility = View.VISIBLE
+            binding.fragmentContainerSettings.visibility = View.VISIBLE
+        }
     }
 
     override fun onMapReady(naverMap: NaverMap) {
@@ -136,4 +173,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         groundOverlay.map = naverMap
     }
+    override fun onResume() {
+        super.onResume()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!isInPictureInPictureMode) {
+                handlePictureInPictureChange(false)
+            }
+        }
+    }
+
 }
