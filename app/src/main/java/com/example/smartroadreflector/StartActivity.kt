@@ -13,10 +13,12 @@ class StartActivity : AppCompatActivity() {
 
         binding.startLoginButton.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
 
         binding.startSignupButton.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
+            finish()
         }
     }
 }
